@@ -1,4 +1,6 @@
 import numpy
+sin = numpy.sin
+cos = numpy.cos
 
 def read_column(rank_2_tensor, col_num):
     return [row[col_num] for row in rank_2_tensor]
@@ -102,4 +104,32 @@ def step_scaler(precision, step_size, delta1, delta2):
         if proposed < rescale:
             rescale = proposed
     return rescale
+
+def reduced_dipole_equations(t, state):
+    '''
+    state is:
+        positions:
+            0)phi_d, 1)phi_t, 2)theta, 3)r
+        momenta:
+            4)pd, 5)pt, 6)ptht, 7)pr
+    '''
+    deltas = numpy.zeros(len(state))
+    #velocities
+    deltas[0] = 20.* state[4]
+    deltas[1] = 20.* state[5]
+    deltas[2] = 2. * state[6]*(state[3]**(-2.))
+    deltas[3] = 2. * state[7]
+    #forces
+    deltas[4] = -sin(state[0])/(12.*state[3]**3)
+    deltas[5] = -sin(state[1] - 2.*state[2])/(4.*state[3]**3)
+    deltas[6] = 2.*sin(state[1] - 2.*state[2])/(4.*state[3]**3)
+    deltas[7] = (
+        2.*state[6]**2/state[3]**3
+        -(
+            cos(state[0]) + 3.*cos(state[1] - 2.*state[2])
+        )/(4.*state[3]**4)
+    )
+    return deltas
+
+
 
