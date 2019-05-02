@@ -63,7 +63,7 @@ def RK45_simple_path(
             running = False
         if len(path) > max_steps:
             running = False
-            print('Did non finish, remaining time:: %f' % time_left)
+            print('Did not finish, remaining time:: %f' % time_left)
             return path
 
         deltO4, deltO5 = rk45_steps(
@@ -119,7 +119,7 @@ def RK45_bouncing_path(
             running = False
         if len(path) > max_steps:
             running = False
-            print('Did non finish, remaining time:: %f' % time_left)
+            print('Did not finish, remaining time:: %f' % time_left)
             return path
 
         deltO4, deltO5 = rk45_steps(
@@ -129,8 +129,16 @@ def RK45_bouncing_path(
         if step_adjust < .9:
             step_size *= step_adjust
             continue
-        if last_state[3] <= 1.0 and deltO5[3]<0.:
-            deltO5[3] = 0
+        #decided steps are acceptably precise
+
+        #normal force prevents acceleration inward
+        # print(last_state)
+        # if last_state[3]==1.:
+        #     print(last_state[3] <= 1.0 , deltO5[7]<0. , last_state[7]==0.)
+        if last_state[3] <= 1.0 and deltO5[7]<0. and last_state[7]==0.:
+            # print('on shell hit')
+            deltO5[3] = 0.
+            deltO5[7] = 0.
         new_state = last_state+deltO5
         new_time = last_time+step_size
         #bounce
@@ -154,7 +162,7 @@ def RK45_bouncing_path(
             step_size = time_left
             last_loop = True
 
-
+    return path
 
 def step_scaler(precision, step_size, delta1, delta2):
     rescale = 10.**6

@@ -38,21 +38,24 @@ class AdaptiveRK45Test(unittest.TestCase):
 class BouncingTests(unittest.TestCase):
     def test_spin_stays_at_r1(self):
         stateI = numpy.array([0.,0.,0.,1.,.5,0.,0.,0.,])
-        path_out = utils.RK45_simple_path(
+        print('spinning #####')
+        path_out = utils.RK45_bouncing_path(
             utils.reduced_dipole_equations, stateI, 0., 20,
             max_steps=500, precision=10**-6)
+        print(path_out[0])
+        print(path_out[1])
         self.assertTrue(path_out[-1][1][3]==1.)
 
     def test_orbital_stays_at_r1(self):
         stateI = numpy.array([0.,0.,0.,1.,0.,.1,-.05,0.,])
-        path_out = utils.RK45_simple_path(
+        path_out = utils.RK45_bouncing_path(
             utils.reduced_dipole_equations, stateI, 0., 20,
             max_steps=1000, precision=10**-6)
         self.assertTrue(path_out[-1][1][3]==1.)
 
     def test_bounce_stays_above_r1(self):
         stateI = numpy.array([0.,0.,0.,1.0,0.,0.,0.,0.2,])
-        path_out = utils.RK45_simple_path(
+        path_out = utils.RK45_bouncing_path(
             utils.reduced_dipole_equations, stateI, 0., 20,
             max_steps=500, precision=10**-6)
         any_inwards = False
