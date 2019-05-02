@@ -5,6 +5,9 @@ def read_column(rank_2_tensor, col_num):
 
 def rk45_steps(gradient_function, t, state, step_size):
     # http://maths.cnam.fr/IMG/pdf/RungeKuttaFehlbergProof.pdf
+    # cross reference
+    # https://math.okstate.edu/people/yqwang/teaching/math4513_fall11/Notes/rungekutta.pdf
+    # https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta%E2%80%93Fehlberg_method#Butcher_tableau_for_Fehlberg%27s_4(5)_method
     kernel1 = step_size*gradient_function(t, state + 0)
     kernel2 = step_size*gradient_function(
         t+step_size/4.,
@@ -20,7 +23,7 @@ def rk45_steps(gradient_function, t, state, step_size):
         )
     kernel5 = step_size*gradient_function(
         t+step_size/1.,
-        state + 439.*kernel1/216. - 8.*kernel2 + 3680.*kernel3/513. + 845.*kernel4/4104.
+        state + 439.*kernel1/216. - 8.*kernel2 + 3680.*kernel3/513. - 845.*kernel4/4104. #error found
         )
     kernel6 = step_size*gradient_function(
         t+step_size/2.,
@@ -30,7 +33,7 @@ def rk45_steps(gradient_function, t, state, step_size):
     delta1 = (
         25.*kernel1/216.
         +1408.*kernel3/2565.
-        +2197.*kernel4/4101.
+        +2197.*kernel4/4104. #error found
         -1.*kernel5/5.
         )
     delta2 = (
@@ -39,22 +42,63 @@ def rk45_steps(gradient_function, t, state, step_size):
         +28561.*kernel4/56430.
         -9.*kernel5/50.
         +2.*kernel6/55.
-        )
+        ) #O
     return delta1, delta2
 
-def RK45_path(
+def RK45_simple_path(
         gradient_function, state, start_time, end_time,
-        precision=10.**-4, step_size=10.**-3, max_steps=10**4
+        precision=10.**-4, step_size=10.**-2, max_steps=10**4
     ):
-    pass
+    path = [(start_time, state)]
+    running = True
+    last_loop = False
+    time_left = end_time - start_time
+    while running:
+        last_time = path[-1][0]
+        last_state = path[-1][1]
+        if last_loop:
+            running = False
+        if len(path) > max_steps:
+            running = False
+            print('Did non finish, remaining time:: %f' % time_left)
+            return path
+
+        deltO4, deltO5 = rk45_steps(
+            gradient_function, last_time, last_state, step_size
+            )
+        step_adjust = step_scaler(precision, step_size, deltO4, deltO5)
+        if step_adjust < .9:
+            step_size *= step_adjust
+            continue
+        new_state = last_state+deltO5
+        new_time = last_time+step_size
+        path.append((new_time, new_state))
+
+        if step_adjust > 1.25:
+            step_adjust = 1.25
+        step_size*= step_adjust
+
+        time_left = end_time-new_time
+        if time_left < step_size:
+            print('finishing early, steps= %d' % (len(path)+1))
+            step_size = time_left
+            last_loop = True
+    return path
+
 
 def step_scaler(precision, step_size, delta1, delta2):
     rescale = 10.**6
+    numer = precision*step_size
     for ind in range(len(delta1)):
-        proposed = (precision*step_size/(
-            2*abs(delta2[ind]-delta1[ind])
-            ))**.25
-        print(proposed)
+        diff = abs(delta2[ind]-delta1[ind])
+        if diff ==0:
+            proposed = 1
+            continue
+        proposed = (
+            numer/(2.*diff)
+        )**.25
+        # print(proposed)
         if proposed < rescale:
             rescale = proposed
     return rescale
+

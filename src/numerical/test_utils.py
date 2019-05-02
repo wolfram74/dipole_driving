@@ -24,12 +24,16 @@ class AdaptiveRK45Test(unittest.TestCase):
         self.assertTrue(abs(numpy.log(adjust2))< abs(numpy.log(adjust1)))
 
     def test_period_check(self):
-        stateI = numpy.array([0.,0.,1.])
+        stateI = numpy.array([0.,1.])
         print('pre starting')
-        path_out = utils.RK45(base_SHO, stateI, 2*numpy.pi, max_steps=500, precision=10**-6)
+        path_out = utils.RK45_simple_path(
+            base_SHO, stateI, 0., 2*numpy.pi,
+            max_steps=500, precision=10**-6)
         print(path_out[-1][0]-2*numpy.pi, path_out[-1][1])
-        self.assertTrue((path_out[-1][0]-2*numpy.pi) < 10**-5)
-        self.assertTrue(abs(path_out[-1][1]) < 10**-5)
+        print(path_out[-2])
+        print(len(path_out))
+        self.assertTrue(abs(path_out[-1][0]-2*numpy.pi) < 10**-5)
+        self.assertTrue(abs(path_out[-1][1][0]) < 10**-5)
 
 def base_SHO(t, state):
     deltas = numpy.zeros(len(state))
