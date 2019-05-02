@@ -88,6 +88,73 @@ def RK45_simple_path(
             last_loop = True
     return path
 
+def RK45_bouncing_path(
+        gradient_function, state, start_time, end_time,
+        precision=10.**-4, step_size=10.**-2, max_steps=10**4
+    ):
+    '''
+    if
+        radial momentum is negative
+        and
+        radial position less than the boundary+margin after an update
+        then bounce
+    if
+        radial momentum is negative
+        and
+        radial position greater than the boundary
+        and
+        the linear interpolated position puts it past the boundary
+        set the time step so it would put it at the margin
+    '''
+    path = [(start_time, state)]
+    running = True
+    last_loop = False
+    time_left = end_time - start_time
+    boundary = 1.
+    margin = 10**-4
+    while running:
+        last_time = path[-1][0]
+        last_state = path[-1][1]
+        if last_loop:
+            running = False
+        if len(path) > max_steps:
+            running = False
+            print('Did non finish, remaining time:: %f' % time_left)
+            return path
+
+        deltO4, deltO5 = rk45_steps(
+            gradient_function, last_time, last_state, step_size
+            )
+        step_adjust = step_scaler(precision, step_size, deltO4, deltO5)
+        if step_adjust < .9:
+            step_size *= step_adjust
+            continue
+        if last_state[3] <= 1.0 and deltO5[3]<0.:
+            deltO5[3] = 0
+        new_state = last_state+deltO5
+        new_time = last_time+step_size
+        #bounce
+        if new_state[3] < (boundary+margin) and new_state[7] < 0:
+            new_state[7] *= -1.
+        path.append((new_time, new_state))
+
+        if step_adjust > 1.25:
+            step_adjust = 1.25
+        step_size*= step_adjust
+
+        if new_state[7] < 0:
+            t_guess = (boundary+margin-state[3])/(2.*state[7])
+            print(t_guess, step_size)
+            if t_guess<step_size:
+                step_size = t_guess
+
+        time_left = end_time-new_time
+        if time_left < step_size:
+            print('finishing early, steps= %d' % (len(path)+1))
+            step_size = time_left
+            last_loop = True
+
+
 
 def step_scaler(precision, step_size, delta1, delta2):
     rescale = 10.**6
@@ -129,6 +196,9 @@ def reduced_dipole_equations(t, state):
             cos(state[0]) + 3.*cos(state[1] - 2.*state[2])
         )/(4.*state[3]**4)
     )
+    #forbidden region
+    # if state[3] <= 1. and deltas[7] <= 0.:
+    #     deltas[7]=0.
     return deltas
 
 

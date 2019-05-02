@@ -35,6 +35,38 @@ class AdaptiveRK45Test(unittest.TestCase):
         self.assertTrue(abs(path_out[-1][0]-2*numpy.pi) < 10**-5)
         self.assertTrue(abs(path_out[-1][1][0]) < 10**-5)
 
+class BouncingTests(unittest.TestCase):
+    def test_spin_stays_at_r1(self):
+        stateI = numpy.array([0.,0.,0.,1.,.5,0.,0.,0.,])
+        path_out = utils.RK45_simple_path(
+            utils.reduced_dipole_equations, stateI, 0., 20,
+            max_steps=500, precision=10**-6)
+        self.assertTrue(path_out[-1][1][3]==1.)
+
+    def test_orbital_stays_at_r1(self):
+        stateI = numpy.array([0.,0.,0.,1.,0.,.1,-.05,0.,])
+        path_out = utils.RK45_simple_path(
+            utils.reduced_dipole_equations, stateI, 0., 20,
+            max_steps=1000, precision=10**-6)
+        self.assertTrue(path_out[-1][1][3]==1.)
+
+    def test_bounce_stays_above_r1(self):
+        stateI = numpy.array([0.,0.,0.,1.0,0.,0.,0.,0.2,])
+        path_out = utils.RK45_simple_path(
+            utils.reduced_dipole_equations, stateI, 0., 20,
+            max_steps=500, precision=10**-6)
+        any_inwards = False
+        print(path_out[:5])
+        for ind in range(len(path_out)):
+            state = path_out[ind]
+            if state[1][3]<=1.:
+                print(path_out[ind-1])
+                print(state)
+
+            self.assertTrue(state[1][3]>=1.)
+            any_inwards = any_inwards or state[1][7]<0.
+        self.assertTrue(any_inwards)
+
 def base_SHO(t, state):
     deltas = numpy.zeros(len(state))
     deltas[0] = state[1]
