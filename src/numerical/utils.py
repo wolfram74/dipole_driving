@@ -5,6 +5,7 @@ def read_column(rank_2_tensor, col_num):
 
 def rk45_steps(gradient_function, t, state, step_size):
     # http://maths.cnam.fr/IMG/pdf/RungeKuttaFehlbergProof.pdf
+    # errors in k5 and delta1 coeffs
     # cross reference
     # https://math.okstate.edu/people/yqwang/teaching/math4513_fall11/Notes/rungekutta.pdf
     # https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta%E2%80%93Fehlberg_method#Butcher_tableau_for_Fehlberg%27s_4(5)_method
