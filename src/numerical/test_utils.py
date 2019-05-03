@@ -94,7 +94,7 @@ class BouncingTests(unittest.TestCase):
         print(path_out[-1][1])
         print(utils.PE(f_state))
         print(utils.KE(f_state))
-        # print(del_L)
+        print(del_L)
         self.assertTrue(del_E < 10**-5)
         self.assertTrue(del_L < 10**-5)
 

@@ -227,5 +227,5 @@ def KE(state):
     return (
         2.*state[7]**2
         +2.*state[6]**2/state[3]**2
-        +20.*(state[0]**2+state[1]**2)
+        +20.*(state[4]**2+state[5]**2)
         )/2.
