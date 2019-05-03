@@ -20,8 +20,8 @@ describe("Vector behavior", function() {
   });
 
   it("should be able to add together when of proper dimension", function() {
-    vector1.add(vector2)
-    expect(vector1.values[1]).toEqual(7);
+    var result = vector1.add(vector2)
+    expect(result.values[1]).toEqual(7);
   });
   it("should be throw an error when not", function() {
     expect(
@@ -31,12 +31,12 @@ describe("Vector behavior", function() {
       );
   });
   it("should be able to use scalar multiplication", function() {
-    vector1.mult(3)
-    expect(vector1.values[1]).toEqual(6);
+    var result = vector1.mult(3)
+    expect(result.values[1]).toEqual(6);
   });
   it("should be able to subtract together when of proper dimension", function() {
-    vector1.sub(vector2)
-    expect(vector1.values[1]).toEqual(-3);
+    var result = vector1.sub(vector2)
+    expect(result.values[1]).toEqual(-3);
   });
   it("should be able to dot product together when of proper dimension", function() {
     expect(vector1.dot(vector2)).toEqual(14);

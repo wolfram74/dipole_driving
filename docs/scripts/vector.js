@@ -6,17 +6,19 @@ Vector.prototype.add = function(otherVec){
   if(this.values.length != otherVec.values.length){
     throw new Error("Dimension mismatch on vector addition")
   };
+  var newVals = new Array(this.values.length)
   for(var i=0; i<this.values.length; i++){
-    this.values[i] += otherVec.values[i]
+     newVals[i] = this.values[i] + otherVec.values[i]
   };
-  return this
+  return new Vector(newVals)
 };
 
 Vector.prototype.mult= function(scalar){
+  var newVals = new Array(this.values.length)
   for(var i=0; i<this.values.length; i++){
-    this.values[i] *= scalar
+    newVals[i] =  this.values[i]*scalar
   };
-  return this
+  return new Vector(newVals)
 }
 
 Vector.prototype.sub= function(otherVec){
