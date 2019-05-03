@@ -33,6 +33,12 @@ def rk45_steps(gradient_function, t, state, step_size):
         state - 8.*kernel1/27. + 2.*kernel2 - 3544.*kernel3/2565.
         + 1859.*kernel4/4104. - 11.*kernel5/40.
         )
+    # print(kernel1)
+    # print(kernel2)
+    # print(kernel3)
+    # print(kernel4)
+    # print(kernel5)
+    # print(kernel6)
     delta1 = (
         25.*kernel1/216.
         +1408.*kernel3/2565.
@@ -153,8 +159,8 @@ def RK45_bouncing_path(
         if new_state[7] < 0:
             t_guess = (boundary+margin-new_state[3])/(2.*new_state[7])
             # print(t_guess, step_size)
-            print(new_time, new_state[3], new_state[7], deltO5[7])
-            print(t_guess, step_size, '\n')
+            # print(new_time, new_state[3], new_state[7], deltO5[7])
+            # print(t_guess, step_size, '\n')
             #t_guess will always be larger than needed
             if t_guess<step_size:
                 step_size = t_guess
@@ -172,6 +178,7 @@ def step_scaler(precision, step_size, delta1, delta2):
     numer = precision*step_size
     for ind in range(len(delta1)):
         diff = abs(delta2[ind]-delta1[ind])
+        print(diff)
         if diff ==0:
             proposed = 1
             continue
