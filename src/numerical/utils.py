@@ -151,8 +151,11 @@ def RK45_bouncing_path(
         step_size*= step_adjust
 
         if new_state[7] < 0:
-            t_guess = (boundary+margin-state[3])/(2.*state[7])
-            print(t_guess, step_size)
+            t_guess = (boundary+margin-new_state[3])/(2.*new_state[7])
+            # print(t_guess, step_size)
+            print(new_time, new_state[3], new_state[7], deltO5[7])
+            print(t_guess, step_size, '\n')
+            #t_guess will always be larger than needed
             if t_guess<step_size:
                 step_size = t_guess
 
@@ -209,5 +212,20 @@ def reduced_dipole_equations(t, state):
     #     deltas[7]=0.
     return deltas
 
+def total_energy(state):
+    return PE(state)+KE(state)
 
+def total_L(state):
+    return 2.*state[5]+state[6]
 
+def PE(state):
+    return -(
+        cos(state[0]) + 3*cos(state[1] - 2.*state[2])
+        )/(12.*state[3]**3)
+
+def KE(state):
+    return (
+        2.*state[7]**2
+        +2.*state[6]**2/state[3]**2
+        +20.*(state[0]**2+state[1]**2)
+        )/2.
