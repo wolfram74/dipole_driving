@@ -34,10 +34,10 @@ describe('utils behavior', function(){
     // python version got (2788.318719217494, 0.5039921097456969)
     expect(Math.abs(Math.log(adjust2))).toBeLessThan(Math.abs(Math.log(adjust1)))
   })
-  xit('rk45SimplePath works for a SHO', function(){
+  it('rk45SimplePath works for a SHO', function(){
     var stateI = new Vector([0, 1])
     var prec = 10**-6
-    var maxSteps = 10
+    var maxSteps = 500
     var tF = 2*Math.PI
     var pathOut = utils.RK45SimplePath(
       base_SHO, stateI, 0, tF,
@@ -46,5 +46,52 @@ describe('utils behavior', function(){
     var stateF = pathOut[pathOut.length-1]
     expect(Math.abs(stateF[0]-tF)).toBeLessThan(10**-5)
     expect(Math.abs(stateF[1].values[0])).toBeLessThan(10**-5)
+  })
+  it('bounce code maintains spinning mode at r=1', function(){
+    var stateI = new Vector([0.,0.,0.,1.,.5,0.,0.,0.,])
+    var prec = 10**-7
+    var maxSteps = 1000
+    var tF = 20
+    // console.log('spin start')
+    var pathOut = utils.RK45BouncingPath(
+        utils.reduced_dipole_equations, stateI, 0., tF,
+        prec,maxSteps)
+    // console.log('spinning' ,pathOut)
+    var stateF = pathOut[pathOut.length-1]
+    expect(stateF[1].values[3]).toEqual(1)
+  })
+  it('bounce code maintains orbital mode at r=1', function(){
+    var stateI = new Vector([0.,0.,0.,1.,0.,.1,-.05,0.,])
+    var prec = 10**-7
+    var maxSteps = 1000
+    var tF = 20
+    var pathOut = utils.RK45BouncingPath(
+        utils.reduced_dipole_equations, stateI, 0., tF,
+        prec,maxSteps)
+    var stateF = pathOut[pathOut.length-1]
+    expect(stateF[1].values[3]).toEqual(1)
+  })
+  it('bounce code maintains conserved quantities', function(){
+    var stateI = new Vector([
+      0.,0.,0.,1.0,
+      0.1, -0.1 , 0.25,0.2
+      ])
+    var prec = 10**-7
+    var maxSteps = 1000
+    var tF = 20
+    var pathOut = utils.RK45BouncingPath(
+        utils.reduced_dipole_equations, stateI, 0., tF,
+        prec,maxSteps)
+    var stateF = pathOut[pathOut.length-1][1]
+    // console.log(stateF)
+    var EInit = utils.totalEnergy(stateI)
+    var LInit = utils.totalL(stateI)
+    var EFin = utils.totalEnergy(stateF)
+    var LFin = utils.totalL(stateF)
+    var delE = Math.abs(EFin-EInit)
+    var delL = Math.abs(LFin-LInit)
+    expect(delE).toBeLessThan(10**-5)
+    expect(delL).toBeLessThan(10**-5)
+
   })
 })
