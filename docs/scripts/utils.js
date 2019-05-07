@@ -166,7 +166,7 @@ utils = (function(){
 
 	    timeLeft = endTime - newTime
 	    if( timeLeft < stepSize){
-	    	console.log('finishing early, steps taken=', path.length)
+	    	// console.log('finishing early, steps taken=', path.length)
 	    	stepSize = timeLeft
 	    	lastLoop = true
 	    }
@@ -202,14 +202,14 @@ utils = (function(){
     deltas[0] = 20.* state.values[4]
     deltas[1] = 20.* state.values[5]
     deltas[2] = 2. * state.values[6]*(state.values[3]**(-2.))
-    if(state.values[3]==1.){
+    if(state.values[3]==1. && state.values[7]<0){
     	deltas[3]=0
     }else{deltas[3] = 2. * state.values[7]}
     //forces
     deltas[4] = -sin(state.values[0])/(12.*state.values[3]**3)
     deltas[5] = -sin(state.values[1] - 2.*state.values[2])/(4.*state.values[3]**3)
     deltas[6] = 2.*sin(state.values[1] - 2.*state.values[2])/(4.*state.values[3]**3)
-    if( state.values[3]==1.){
+    if( state.values[3]==1. && state.values[7]<0){
     	deltas[7] = 0
     }else{
 	    deltas[7] = (
