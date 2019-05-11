@@ -20,20 +20,28 @@ Peter Haugen
     <form class='controls'>
       <ul>
         <li>
-          <input type='range' name='pd' value='0' min='-0.5', max='0.5' step='.01'></input> $&p_{\phi_d}&$
-          <!-- <span class='pd_display'>0.5</span> -->
+          <input type='number' name='phi_d' value='0' min='-0.5', max='0.5' step='.01'></input> $&{\phi_d}&$
         </li>
         <li>
-          <input type='range' name='pt' value='00' min='-0.5', max='0.5' step='.01'></input> $&p_{\phi_t}&$
-          <!-- <span class='pt_display'>-0.5</span> -->
+          <input type='number' name='phi_t' value='0' min='-0.5', max='0.5' step='.01'></input> $&{\phi_t}&$
         </li>
         <li>
-          <input type='range' name='ptht' value='0' min='-0.5', max='0.5' step='.01'></input> $&p_{\theta}&$
-          <!-- <span class='ptht_display'>0</span> -->
+          <input type='number' name='tht' value='0' min='-0.5', max='0.5' step='.01'></input> $&{\theta}&$
         </li>
         <li>
-          <input type='range' name='pr' value='0' min='0.01', max='2' step='.01'></input> $&p_{r}&$
-          <!-- <span class='pr_display'>.5</span> -->
+          <input type='number' name='r' value='1.001' min='1.001', max='2' step='.01'></input> $&{r}&$
+        </li>
+        <li>
+          <input type='number' name='pd' value='0' min='-0.5', max='0.5' step='.01'></input> $&p_{\phi_d}&$
+        </li>
+        <li>
+          <input type='number' name='pt' value='0' min='-0.5', max='0.5' step='.01'></input> $&p_{\phi_t}&$
+        </li>
+        <li>
+          <input type='number' name='ptht' value='0' min='-0.5', max='0.5' step='.01'></input> $&p_{\theta}&$
+        </li>
+        <li>
+          <input type='number' name='pr' value='0' min='0.01', max='2' step='.01'></input> $&p_{r}&$
         </li>
       </ul>
       <input type='button' value='run' id='runner'></input>

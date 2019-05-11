@@ -17,11 +17,13 @@ MathJax.Hub.Config({
 var goTime = function(){
 	console.log('going')
 	if(running){return}
+	running = true
 	var start = readForm()
 	var state0 = new Vector(start)
 	drawLoop(state0)
 }
 
+// drawLoop(new Vector([0,0,0,1.001,0.05, -.1,.2,0.0]))
 var drawLoop = function(startVec){
     var prec = 10**-7
     var maxSteps = 1000
@@ -41,10 +43,10 @@ var readForm = function(){
 	var form = document.getElementsByClassName('controls')[0]
 	console.log(form)
 	var initVals = new Array(8)
-	initVals[0] = 0
-	initVals[1] = 0
-	initVals[2] = 0
-	initVals[3] = 1
+	initVals[0] = 1*form['phi_d'].value
+	initVals[1] = 1*form['phi_t'].value
+	initVals[2] = 1*form['tht'].value
+	initVals[3] = 1*form['r'].value
 	initVals[0+4] = 1*form['pd'].value
 	initVals[1+4] = 1*form['pt'].value
 	initVals[2+4] = 1*form['ptht'].value
