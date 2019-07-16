@@ -1,5 +1,9 @@
 import sympy
 
+def mathjaxify(expr):
+    print(sympy.latex(expr).replace('\\', '\\\\'))
+
+
 pphi1, pphi2, ptht, pr = sympy.symbols('p_phi1 p_phi2 p_theta p_r')
 vphi1, vphi2, vtht, vr = sympy.symbols('v_phi1 v_phi2 v_theta v_r')
 vphid, vphit, vtht, vr = sympy.symbols('v_phid v_phit v_theta v_r')
@@ -33,6 +37,7 @@ Lag = Tl-U
 new_Ham = new_Tp + new_U
 tot_Ln = ptht + 2*pt
 
-sympy.pprint(Tp)
-sympy.pprint(U)
-sympy.pprint(Ham)
+if __name__ == '__main__':
+    sympy.pprint(Tp)
+    sympy.pprint(U)
+    sympy.pprint(Ham)

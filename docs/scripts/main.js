@@ -23,6 +23,18 @@ var goTime = function(){
 	drawLoop(state0)
 }
 
+var update = function(){
+	console.log('update noticed')
+	var stateVals = readForm()
+	var state = new Vector(stateVals)
+	var toteE = utils.totalEnergy(state)
+	var toteL = utils.totalL(state)
+	var form = document.getElementsByClassName('controls')[0]
+	document.getElementById('total_E').textContent = toteE
+	document.getElementById('total_L').textContent = toteL
+
+}
+
 // drawLoop(new Vector([0,0,0,1.001,0.05, -.1,.2,0.0]))
 var drawLoop = function(startVec){
     var prec = 10**-7
@@ -37,7 +49,11 @@ var drawLoop = function(startVec){
 }
 
 document.getElementById('runner').addEventListener('click', goTime)
+document.getElementsByClassName('controls')[0].addEventListener('change', update)
 running = false
+oldLoop = 0
+
+
 
 var readForm = function(){
 	var form = document.getElementsByClassName('controls')[0]
@@ -52,7 +68,7 @@ var readForm = function(){
 	initVals[2+4] = 1*form['ptht'].value
 	initVals[3+4] = 1*form['pr'].value
 	console.log(initVals)
-	draw(initVals)
+	// draw(initVals)
 	return initVals
 	// debugger
 }

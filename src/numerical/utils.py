@@ -145,6 +145,7 @@ def RK45_bouncing_path(
             # print('on shell hit')
             deltO5[3] = 0.
             deltO5[7] = 0.
+            #on shell, prdot is negative
         new_state = last_state+deltO5
         new_time = last_time+step_size
         #bounce
