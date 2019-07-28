@@ -1,4 +1,7 @@
 import sympy
+#new_positions [phi_d, phi_t, tht, r]
+#new_momenta [p_phi_d, p_phi_t, p_tht, p_r]
+
 
 def mathjaxify(expr):
     print(sympy.latex(expr).replace('\\', '\\\\'))
@@ -41,3 +44,4 @@ if __name__ == '__main__':
     sympy.pprint(Tp)
     sympy.pprint(U)
     sympy.pprint(Ham)
+
