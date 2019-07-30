@@ -4,6 +4,7 @@ import sympy
 from sympy.solvers.solveset import linsolve
 
 import sys
+import pdb
 
 def K_mat_gen(H, q_vars, equi_vals):
     # subs = []
@@ -155,43 +156,78 @@ def round_two():
         H_first_mat.append(row)
     H_first_mat = sympy.Matrix(H_first_mat)
     sympy.pprint(H_first_mat)
-    charpoly = H_first_mat.charpoly(w).simplify().as_expr()
-    sympy.pprint(charpoly)
-    sympy.pprint(sympy.collect(charpoly,w**2))
-    sympy.pprint(charpoly.simplify().collect(w))
-    sympy.pprint(sympy.Poly(charpoly, w).all_coeffs())
+    # charpoly = H_first_mat.charpoly(w).simplify().as_expr()
+    # t1 = H_first_mat.charpoly(w).simplify()
+    # sympy.pprint(charpoly)
+    # sympy.pprint(sympy.collect(charpoly,w**2))
+    # sympy.pprint(charpoly.simplify().collect(w))
+    # sympy.pprint(sympy.Poly(charpoly, w).all_coeffs())
     # test = w**2-1
     # soltns = sympy.solve(test, w)
     # sympy.pprint(soltns)
-    soltns = sympy.solvers.solve(charpoly.simplify(), w**2)
-    sympy.pprint(soltns)
+    # soltns = sympy.solvers.solve(charpoly.simplify(), w**2)
+    # sympy.pprint(soltns)
     # sympy.pprint(
     #     H_first_mat.eigenvals()
     #     )
 # 13.04
-    system = H_first_mat.col_insert(-1, sympy.Matrix([0,0,0,0,0,0,0,0]))
+    # system = H_first_mat.col_insert(-1, sympy.Matrix([0,0,0,0,0,0,0,0]))
     # linsolve(system)
-    soltn = linsolve(system, gamma)
+    # soltn = linsolve(system, gamma)
     # soltn = sympy.solve(system)
     # soltn = sympy.solvers.solve_linear_system(system)
-    sympy.pprint(soltn)
-    # modes = H_first_mat.eigenvects(error_when_incomplete=False)
-    # for mode in modes:
-    #     print('new mode')
-    #     sympy.pprint(mode[0])
-    #     freqs = sympy.solve(mode[0],w)
-    #     freq_sqr = freqs[0]
-    #     sympy.pprint(freqs)
-    #     sympy.pprint(freq_sqr)
-    #     eig_vecs = [[vi.subs(w**2, freq_sqr)] for vi in mode[2][0]]
-    #     sympy.pprint(eig_vecs)
+    # sympy.pprint(soltn)
+    # pdb.set_trace()
+    modes = H_first_mat.eigenvects(error_when_incomplete=False)
+    for mode in modes:
+        print('new mode')
+        sympy.pprint(mode[0])
+        freqs = mode[0]
+        freq_sqr = (freqs**2).expand().simplify()
+        # sympy.pprint(freqs)
+        # sympy.pprint(mode[2])
+        sympy.pprint(freq_sqr)
+        # pdb.set_trace()
+        # eig_vecs = [[vi.subs(freq_sqr,w**2).expand().simplify()] for vi in mode[2][0]]
+        # sympy.pprint(eig_vecs)
+def round_three():
+    pairs = []
+    ep, Omeg, w, t = sympy.symbols('epsilon Omega omega t', real=True)
 
+    for ind in range(len(new_positions)):
+        force = new_Lag.diff(new_positions[ind])
+        momen = new_Lag.diff(new_velocities[ind]).subs(acc_sub)
+        if ind ==2:
+            momen = momen.subs([(atht, (atht-2*vtht*vr/r))]).expand()
+        pairs.append([force, momen])
+        print(ind)
+        sympy.pprint(pairs[-1])
+    lag_eqs = [pair[0]-pair[1] for pair in pairs]
+    full_coords = new_positions+new_velocities+new_accs
+    pert_subs, new_coords = perturbed_quants(full_coords, 1)
+    zth_angles = angle_subs(new_coords, Omeg*t)
+    sympy.pprint(lag_eqs)
+    sympy.pprint(pert_subs)
+
+    subbed_eqs = [eqn.subs(pert_subs) for eqn in lag_eqs]
+    zeroth_ord = []
+    first_ord = []
+    for eqtn in subbed_eqs:
+        # mathjaxify(term)
+        eqtn = eqtn.subs(zth_angles)
+        sympy.pprint(eqtn)
+        taylored = eqtn.series(ep, n=2).removeO()
+        sympy.pprint(taylored)
+        # split = sympy.Poly(term.subs(zth_angles), ep).all_coeffs()
+        # zeroth_ord.append(split[1])
+        # first_ord.append(split[0])
 
 
 
 op_codes=[
     first_round,
     round_two,
+    round_three,
 ]
 
 if __name__ == '__main__':
