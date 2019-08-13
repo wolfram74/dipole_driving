@@ -156,40 +156,29 @@ def round_two():
         H_first_mat.append(row)
     H_first_mat = sympy.Matrix(H_first_mat)
     sympy.pprint(H_first_mat)
-    # charpoly = H_first_mat.charpoly(w).simplify().as_expr()
-    # t1 = H_first_mat.charpoly(w).simplify()
-    # sympy.pprint(charpoly)
-    # sympy.pprint(sympy.collect(charpoly,w**2))
-    # sympy.pprint(charpoly.simplify().collect(w))
-    # sympy.pprint(sympy.Poly(charpoly, w).all_coeffs())
-    # test = w**2-1
-    # soltns = sympy.solve(test, w)
-    # sympy.pprint(soltns)
-    # soltns = sympy.solvers.solve(charpoly.simplify(), w**2)
-    # sympy.pprint(soltns)
-    # sympy.pprint(
-    #     H_first_mat.eigenvals()
-    #     )
-# 13.04
-    # system = H_first_mat.col_insert(-1, sympy.Matrix([0,0,0,0,0,0,0,0]))
-    # linsolve(system)
-    # soltn = linsolve(system, gamma)
-    # soltn = sympy.solve(system)
-    # soltn = sympy.solvers.solve_linear_system(system)
-    # sympy.pprint(soltn)
+    h1mat = H_first_mat
     # pdb.set_trace()
+    charpoly = h1mat.charpoly(w)
+    evals = sympy.solve(charpoly, w**2)
+    sympy.pprint(charpoly.as_expr())
+    sympy.pprint(evals)
     modes = H_first_mat.eigenvects(error_when_incomplete=False)
-    for mode in modes:
-        print('new mode')
-        sympy.pprint(mode[0])
-        freqs = mode[0]
-        freq_sqr = (freqs**2).expand().simplify()
-        # sympy.pprint(freqs)
-        # sympy.pprint(mode[2])
-        sympy.pprint(freq_sqr)
-        # pdb.set_trace()
-        # eig_vecs = [[vi.subs(freq_sqr,w**2).expand().simplify()] for vi in mode[2][0]]
-        # sympy.pprint(eig_vecs)
+    sympy.pprint(modes[0])
+    sympy.pprint(modes[1])
+    sympy.pprint(modes[2])
+    print('gibberish')
+    # pdb.set_trace()
+    num_val_r0 = (new_vars[3][0], 2.0)
+    for ind1 in range(2,len(modes)):
+        print(ind1)
+        sympy.pprint(modes[ind1][0])
+        sympy.pprint(modes[ind1][0].subs([num_val_r0]).evalf())
+        for ind in range(len(gamma)):
+            sympy.pprint([
+                gamma[ind],
+                modes[ind1][2][0][ind].subs([num_val_r0]).evalf()
+                ])
+
 def round_three():
     pairs = []
     ep, Omeg, w, t = sympy.symbols('epsilon Omega omega t', real=True)
@@ -238,3 +227,15 @@ if __name__ == '__main__':
         op_code = int(sys.argv[1])
         print(op_code)
         op_codes[op_code]()
+
+
+'''
+07/30
+consider numerical evaluation of eigenmodes for analysis
+    use those as basis for checking evolution
+
+08/06
+examine oscillatory modes (possible spinning and orbital mode)
+animate?
+
+'''

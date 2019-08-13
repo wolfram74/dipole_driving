@@ -179,7 +179,7 @@ def step_scaler(precision, step_size, delta1, delta2):
     numer = precision*step_size
     for ind in range(len(delta1)):
         diff = abs(delta2[ind]-delta1[ind])
-        print(diff)
+        # print(diff)
         if diff ==0:
             proposed = 1
             continue
